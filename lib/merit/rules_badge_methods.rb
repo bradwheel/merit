@@ -8,7 +8,6 @@ module Merit
 
       rule = Rule.new
       rule.badge_name = options[:badge]
-      rule.level      = options[:level]
       rule.to         = options[:to] || :action_user
       rule.multiple   = options[:multiple] || false
       rule.temporary  = options[:temporary] || false

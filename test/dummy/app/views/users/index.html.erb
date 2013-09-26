@@ -5,7 +5,6 @@
     <th>Name</th>
     <th>#Comments</th>
     <th>Badges</th>
-    <th>Points</th>
   </tr>
 
 <% @users.each do |user| %>
@@ -13,7 +12,6 @@
     <td><%= user.name %></td>
     <td><%= user.comments.count %></td>
     <td><%= user.show_badges %></td>
-    <td><%= user.points %></td>
     <td><%= link_to 'Show', user %>
     - <%= link_to 'Edit', edit_user_path(user) %>
     - <%= link_to 'Destroy', user, data: { :confirm => 'Are you sure?' }, :method => :delete %></td>

@@ -1,7 +1,5 @@
 require 'merit/rule'
 require 'merit/rules_badge_methods'
-require 'merit/rules_points_methods'
-require 'merit/rules_rank_methods'
 require 'merit/rules_matcher'
 require 'merit/controller_extensions'
 require 'merit/model_additions'
@@ -49,7 +47,6 @@ module Merit
         require 'merit/models/active_record/merit/activity_log'
         require 'merit/models/active_record/merit/badges_sash'
         require 'merit/models/active_record/merit/sash'
-        require 'merit/models/active_record/merit/score'
       elsif Merit.orm == :mongoid
         require 'merit/models/mongoid/sash'
       end
@@ -58,7 +55,6 @@ module Merit
         begin
           # Load application defined rules on application boot up
           ::Merit::AppBadgeRules = ::Merit::BadgeRules.new.defined_rules
-          ::Merit::AppPointRules = ::Merit::PointRules.new.defined_rules
           include Merit::ControllerExtensions
         rescue NameError => e
           # Trap NameError if installing/generating files

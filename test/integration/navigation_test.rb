@@ -73,14 +73,6 @@ class NavigationTest < ActiveSupport::IntegrationCase
     end
     assert user.badges.empty?, 'Should not have badges'
 
-    assert_equal 0, user.points
-    assert_equal 0, Merit::Score::Point.count
-    user.add_points 15
-    assert_equal 15, user.points
-    user.substract_points 15
-    assert_equal 0, user.points
-    assert_equal 2, Merit::Score::Point.count
-
     # Make tenth comment, assert 10-commenter badge granted
     visit '/comments/new'
     fill_in 'Name', with: 'Hi!'
@@ -90,7 +82,6 @@ class NavigationTest < ActiveSupport::IntegrationCase
       click_button('Create Comment')
     end
 
-    assert_equal [Merit::Badge.by_name('commenter').by_level(10).first], user.reload.badges
     assert_equal [Merit::Badge.by_name('has_commenter_friend').first], friend.reload.badges
 
     # Vote (to 5) a user's comment, assert relevant-commenter badge granted
@@ -129,102 +120,6 @@ class NavigationTest < ActiveSupport::IntegrationCase
 
     user = User.where(name: 'abc').first
     assert !user.badges.include?(autobiographer_badge), "User badges: #{user.badges.collect(&:name).inspect} should remove autobiographer badge."
-  end
-
-  test 'user workflow should add up points at some times' do
-    User.delete_all
-    user = User.create(name: 'test-user')
-    assert_equal 0, user.points, 'User should start with 0 points'
-
-    visit "/users/#{user.id}/edit"
-    fill_in 'Name', with: 'a'
-    assert_difference('Merit::ActivityLog.count', 2) do
-      click_button('Update User')
-    end
-
-    user = User.where(name: 'a').first
-    assert_equal 20, user.points, 'Updating info should grant 20 points'
-
-    visit '/comments/new'
-    click_button('Create Comment')
-
-    user = User.where(name: 'a').first
-    assert_equal 20, user.points, 'Empty comment should grant no points'
-
-    visit '/comments/new'
-    fill_in 'Name', with: 'Hi!'
-    fill_in 'Comment', with: 'Hi bro!'
-    fill_in 'User', with: user.id
-    click_button('Create Comment')
-
-    user = User.where(name: 'a').first
-    assert_equal 20, user.points, 'Commenting should not grant 20 points if name.length <= 4'
-
-    visit '/comments/new'
-    fill_in 'Name', with: 'Hi there!'
-    fill_in 'Comment', with: 'Hi bro!'
-    fill_in 'User', with: user.id
-    click_button('Create Comment')
-
-    user = User.where(name: 'a').first
-    assert_equal 40, user.points, 'Commenting should grant 20 points if name.length > 4'
-
-    visit "/comments/#{Comment.last.id}/vote/4"
-    user = User.first
-    assert_equal 46, user.points, 'Voting comments should grant 5 points for voted, and 1 point for voting'
-  end
-
-  test 'user workflow should grant levels at some times' do
-    user = User.create(name: 'test-user')
-    assert user.badges.empty?
-
-    # Edit user's name by 2 chars name
-    visit "/users/#{user.id}/edit"
-    fill_in 'Name', with: 'ab'
-    click_button('Update User')
-
-    user = User.where(name: 'ab').first
-    assert_equal 0, user.level, "User level should be 0."
-    Merit::RankRules.new.check_rank_rules
-    user.reload
-    assert_equal 2, user.level, "User level should be 2."
-
-    # Edit user's name by short name. Doesn't go back to previous rank.
-    visit "/users/#{user.id}/edit"
-    fill_in 'Name', with: 'a'
-    click_button('Update User')
-
-    user = User.where(name: 'a').first
-    Merit::RankRules.new.check_rank_rules
-    user.reload
-    assert_equal 2, user.level, "User level should be 2."
-
-    # Edit user's name by 5 chars name
-    visit "/users/#{user.id}/edit"
-    fill_in 'Name', with: 'abcde'
-    click_button('Update User')
-
-    user = User.where(name: 'abcde').first
-    Merit::RankRules.new.check_rank_rules
-    user.reload
-    assert_equal 5, user.level, "User level should be 5."
-  end
-
-  test 'assigning points to a group of records' do
-    commenter = User.create(name: 'commenter')
-    comment_1 = commenter.comments.create(name: 'comment_1', comment: 'a')
-    comment_2 = commenter.comments.create(name: 'comment_2', comment: 'b')
-
-    visit comments_path
-    # Thanks for voting point, to voted user and it's comments
-    assert_difference('Merit::ActivityLog.count', 4) do
-      within "tr#c_#{comment_2.id}" do
-        click_link '1'
-      end
-    end
-
-    comment_1.reload.points.must_be :==, 2
-    comment_2.reload.points.must_be :==, 2
   end
 
   def badges_by_name(user, name)

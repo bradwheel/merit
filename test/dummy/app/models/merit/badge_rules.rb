@@ -36,7 +36,7 @@ module Merit
       grant_on '.*users#index', badge: 'wildcard_badge', multiple: true
 
       # If it has 10 comments, grant commenter-10 badge
-      grant_on 'comments#create', badge: 'commenter', level: 10 do |comment|
+      grant_on 'comments#create', badge: 'commenter' do |comment|
         comment.user.comments.count >= 10
       end
       # Testing badge granting in more than one rule per action with different targets

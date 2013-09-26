@@ -24,15 +24,14 @@ module Merit
       return if had_errors
 
       check_rules rules_matcher.select_from(AppBadgeRules), :badges
-      check_rules rules_matcher.select_from(AppPointRules), :points
     end
 
     private
 
-    def check_rules(rules_array, badges_or_points)
+    def check_rules(rules_array, badges)
       rules_array.each do |rule|
         judge = Judge.new sashes_to_badge(rule), rule, action: self
-        judge.send :"apply_#{badges_or_points}"
+        judge.send :"apply_#{badges}"
       end
     end
 

@@ -23,14 +23,6 @@ module Merit
       end
     end
 
-    def apply_points
-      return unless rule_applies?
-      @sashes.each do |sash|
-        point = sash.add_points @rule.score
-        notify_observers(@action.id, point)
-      end
-    end
-
     private
 
     def grant_badges

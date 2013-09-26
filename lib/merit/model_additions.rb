@@ -17,9 +17,8 @@ module Merit
 
     # Delegate methods from meritable models to their sash
     def _merit_delegate_methods_to_sash
-      methods = %w(badge_ids badges points
-        add_badge rm_badge
-        add_points substract_points)
+      methods = %w(badge_ids badges
+        add_badge rm_badge)
       methods.each { |method| delegate method, to: :_sash }
     end
 
@@ -27,12 +26,8 @@ module Merit
       if Merit.orm == :mongo_mapper
         plugin Merit
         key :sash_id, String
-        key :points, Integer, default: 0
-        key :level, Integer, default: 0
       elsif Merit.orm == :mongoid
         field :sash_id
-        field :points, type: Integer, default: 0
-        field :level, type: Integer, default: 0
         def find_by_id(id)
           where(_id: id).first
         end

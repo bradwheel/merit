@@ -32,7 +32,6 @@ ActiveRecord::Schema.define(:version => 20130329222238) do
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
     t.integer  "sash_id"
-    t.integer  "level",      :default => 0
   end
 
   create_table "merit_actions", :force => true do |t|
@@ -55,18 +54,6 @@ ActiveRecord::Schema.define(:version => 20130329222238) do
     t.datetime "created_at"
   end
 
-  create_table "merit_score_points", :force => true do |t|
-    t.integer  "score_id"
-    t.integer  "num_points", :default => 0
-    t.string   "log"
-    t.datetime "created_at"
-  end
-
-  create_table "merit_scores", :force => true do |t|
-    t.integer "sash_id"
-    t.string  "category", :default => "default"
-  end
-
   create_table "sashes", :force => true do |t|
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
@@ -77,7 +64,6 @@ ActiveRecord::Schema.define(:version => 20130329222238) do
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
     t.integer  "sash_id"
-    t.integer  "level",      :default => 0
   end
 
 end

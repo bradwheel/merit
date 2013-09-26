@@ -6,7 +6,7 @@ module Merit
     extend Ambry::Model
     extend Ambry::ActiveModel
 
-    field :id, :name, :level, :image, :description, :custom_fields
+    field :id, :name, :image, :description, :custom_fields
 
     validates_presence_of :id, :name
     validates_uniqueness_of :id
@@ -21,15 +21,11 @@ module Merit
         find { |b| b.name == name.to_s }
       end
 
-      def by_level(level)
-        find { |b| b.level.to_s == level.to_s }
-      end
     end
 
     class << self
-      def find_by_name_and_level(name, level)
+      def find_by_name(name)
         badges = Badge.by_name(name)
-        badges = badges.by_level(level) unless level.nil?
         if (badge = badges.first).nil?
           str = "No badge '#{name}' found. Define it in initializers/merit.rb"
           raise ::Merit::BadgeNotFound, str

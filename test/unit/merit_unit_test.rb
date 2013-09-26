@@ -46,33 +46,6 @@ class MeritUnitTest < ActiveSupport::TestCase
     assert_equal Merit::Badge.last_granted(since_date: 2.weeks.ago, limit: 1), [badge]
   end
 
-  test 'Merit::Score.top_scored returns scores leaderboard' do
-    # Create sashes and add points
-    sash_1 = Merit::Sash.create
-    sash_1.add_points(10); sash_1.add_points(10)
-    sash_2 = Merit::Sash.create
-    sash_2.add_points(5); sash_2.add_points(5)
-
-    # Test method options
-    assert_equal [{'sash_id'=>sash_1.id, 'sum_points'=>20, 0=>1, 1=>20},
-      {'sash_id'=>sash_2.id, 'sum_points'=>10, 0=>2, 1=>10}],
-      Merit::Score.top_scored(table_name: :sashes)
-    assert_equal  [{'sash_id'=>sash_1.id, 'sum_points'=>20, 0=>1, 1=>20}],
-      Merit::Score.top_scored(table_name: :sashes, limit: 1)
-  end
-
-  test 'unknown ranking raises exception' do
-    class WeirdRankRules
-      include Merit::RankRulesMethods
-      def initialize
-        set_rank level: 1, to: User, level_name: :clown
-      end
-    end
-    assert_raises Merit::RankAttributeNotDefined do
-      WeirdRankRules.new.check_rank_rules
-    end
-  end
-
   test 'Badge#custom_fields_hash saves correctly' do
     Merit::Badge.create(id: 99, name: 'test-badge',
       custom_fields: { key_1: 'value1' })

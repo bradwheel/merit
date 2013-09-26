@@ -15,7 +15,6 @@ class User < ActiveRecord::Base
   def badge_status(badge)
     status = []
     count = badges.select{|b| b.name == badge.name }.count
-    status << "level: #{badge.level}" if badge.level
     status << "x#{count}" if count > 1
     status.present? ? " (#{status.join(', ')})" : ''
   end

@@ -11,7 +11,7 @@ module Merit
     end
 
     def any_matching?
-      select_from(AppBadgeRules).any? || select_from(AppPointRules).any?
+      select_from(AppBadgeRules).any?
     end
 
     private
