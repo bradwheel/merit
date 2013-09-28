@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = "merit"
   s.summary     = "General reputation Rails engine."
-  s.description = "Manage badges, points and rankings (reputation) of resources in a Rails application."
+  s.description = "Manage badges resources in a Rails application."
   s.homepage    = "http://github.com/tute/merit"
   s.files       = `git ls-files`.split("\n").reject{|f| f =~ /^\./ }
   s.version     = '1.6.1'
